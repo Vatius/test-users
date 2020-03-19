@@ -98,6 +98,9 @@ class SiteController extends Controller
                     $query = Payment::find()->where(['user' => $user->id]);
                 }
                 // TODO: handle error if user not found
+            } else if(Yii::$app->request->post('from') && Yii::$app->request->post('to')) {
+                //filter by date
+                $query = Payment::find()->where(['>=','created_at',Yii::$app->request->post('from') . ' 00:00:00'])->andWhere(['<=','created_at',Yii::$app->request->post('to') . ' 23:59:59']);
             } else {
                 $query = Payment::find();
             }
