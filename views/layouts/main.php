@@ -3,7 +3,7 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
-use app\widgets\Alert;
+use yii\bootstrap\Alert;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
@@ -46,7 +46,14 @@ AppAsset::register($this);
     ?>
 
     <div class="container">
-        <?= Alert::widget() ?>
+    <?php if (Yii::$app->session->hasFlash('alert')): ?>
+        <?= Alert::widget([
+                'options' => [
+                    'class' => 'alert-info',
+                ],
+                'body' => Yii::$app->session->getFlash('alert'),
+            ]) ?>
+        <?php endif; ?>
         <?= $content ?>
     </div>
 </div>

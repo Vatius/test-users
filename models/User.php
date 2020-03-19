@@ -35,6 +35,7 @@ class User extends \yii\db\ActiveRecord
         return [
             [['name'], 'string'],
             [['phone', 'status'], 'integer'],
+            [['name','phone'], 'required']
         ];
     }
 

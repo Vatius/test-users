@@ -53,7 +53,11 @@ class SiteController extends Controller
             $model = new Payment();
             $user = User::find()->where(['id' => $payForm->user])->orWhere(['phone' => $payForm->user])->one();
             if($user == null) {
-                // TODO: handle error (alert mb?)
+                Yii::$app->session->setFlash('alert', "User not found.");
+                return $this->redirect(['site/index']);
+            }
+            if($user->status == User::STATUS_INACTIVE) {
+                Yii::$app->session->setFlash('alert', "User is inactive.");
                 return $this->redirect(['site/index']);
             }
             $model->user = $user->id;
@@ -96,8 +100,10 @@ class SiteController extends Controller
                 $user = User::find()->where(['id' => Yii::$app->request->post('user')])->orWhere(['phone' => Yii::$app->request->post('user')])->one();
                 if($user) {
                     $query = Payment::find()->where(['user' => $user->id]);
+                } else {
+                    Yii::$app->session->setFlash('alert', "User not found. Showing all entries");
+                    $query = Payment::find();
                 }
-                // TODO: handle error if user not found
             } else if(Yii::$app->request->post('from') && Yii::$app->request->post('to')) {
                 //filter by date
                 $query = Payment::find()->where(['>=','created_at',Yii::$app->request->post('from') . ' 00:00:00'])->andWhere(['<=','created_at',Yii::$app->request->post('to') . ' 23:59:59']);
